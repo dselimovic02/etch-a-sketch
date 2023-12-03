@@ -1,11 +1,10 @@
 const defaultBackground = "rgb(255, 255, 255)";
-const cells = document.querySelectorAll(".cell");
 const clear = document.querySelector(".clear");
+let cells = null;
 const penBtns = document.querySelectorAll(".options button");
 const penOptions = {
     "PEN": "black",
     "MRKR": [
-        "rgb(255, 255, 255)",
         "rgba(0, 0, 0, 0.2)",
         "rgba(0, 0, 0, 0.4)",
         "rgba(0, 0, 0, 0.6)",
@@ -24,32 +23,22 @@ const penOptions = {
 };
 let setPen = "PEN";
 const drawingArea = document.querySelector(".drawing-area");
+const sizeBtns = document.querySelectorAll(".sizes button");
+const sizes = {
+    //no. of pixels per row per column
+    "small": 16,
+    "medium": 18,
+    "large": 32
+}
 
 
 
-setCellColor();
-
-
+/*Initial option*/
+showDrawingArea(16, 16);
+addPropertiesToCells();
 
 
 /*EVENT LISTENERES*/ 
-
-/*Paint cells*/
-cells.forEach(cell => {
-    cell.addEventListener("mouseover", ()=>{
-        if(setPen == "RNBW"){
-            if(checkBackground(cell.style.background, setPen))
-                cell.style.background = selectRandomRnbwColor();
-        }else if(setPen == "MRKR"){
-            if(checkBackground(cell.style.background, setPen)){
-                cell.style.background = mrkrColor(cell.style.background);
-            }
-        }else{
-            cell.style.background = "black";
-        }
-        
-    });
-});
 
 clear.addEventListener("click", clearCells);
 
@@ -61,7 +50,17 @@ penBtns.forEach(pen => {
         }
     });
 });
-
+sizeBtns.forEach(size => {
+    size.addEventListener("click", () =>{
+        drawingArea.textContent = '';
+        switch(size.id){
+            case "small": showDrawingArea(sizes.small, sizes.small); break;
+            case "medium": showDrawingArea(sizes.medium, sizes.medium); break;
+            case "large": showDrawingArea(sizes.large, sizes.large); break;
+        }
+        addPropertiesToCells();
+    });
+});
 
 
 /*FUNCTIONS*/
@@ -84,8 +83,6 @@ function mrkrColor(backgroundColor){
 }
 
 function checkBackground(backgroundColor, penType){
-     console.log(backgroundColor);
-     console.log(penOptions.RNBW.indexOf(backgroundColor));
     switch(penType){
         case "MRKR": 
             if(backgroundColor != "black") 
@@ -97,4 +94,53 @@ function checkBackground(backgroundColor, penType){
             break;
     }
     return false;
+}
+
+function showDrawingArea(x, y){
+    if(x < 1){
+        return;
+    }
+
+    drawingArea.appendChild(generateRowOfCells(y));
+
+    showDrawingArea(x - 1, y);
+}
+
+function generateRowOfCells(cellsNum){
+     let row = document.createElement("div");
+     row.classList.add("row");
+
+    for(let i = 0; i < cellsNum; i++){
+        row.appendChild(generateCell());
+    }
+
+    return row;
+}
+
+function generateCell(){
+    let cell = document.createElement("div");
+    cell.classList.add("cell");
+
+    return cell;
+}
+
+function addPropertiesToCells(){
+    cells = document.querySelectorAll(".cell");
+    console.log(cells);
+    setCellColor(cells);
+    cells.forEach(cell => {
+        cell.addEventListener("mouseover", ()=>{
+            if(setPen == "RNBW"){
+                if(checkBackground(cell.style.background, setPen))
+                    cell.style.background = selectRandomRnbwColor();
+            }else if(setPen == "MRKR"){
+                if(checkBackground(cell.style.background, setPen)){
+                    cell.style.background = mrkrColor(cell.style.background);
+                }
+            }else{
+                cell.style.background = "black";
+            }
+            
+        });
+    });
 }
