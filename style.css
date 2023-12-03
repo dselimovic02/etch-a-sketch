@@ -26,9 +26,9 @@ button{
     gap: 2rem;
 }
 .drawing-area{
-    border: .1rem double #000;
-    width: 62rem;
-    height: 62rem;
+    border: .5rem solid #000;
+    width: 64rem;
+    height: 64rem;
     display: flex;
     flex-direction: column;
 }
@@ -37,11 +37,12 @@ button{
     flex: auto;
 }
 .cell{
-    border: .1rem solid gray;
+    border: .1rem solid #555;
     flex: auto;
     aspect-ratio: 1;
 }
-.options{
+.options,
+.sizes{
     display: flex;
     justify-content: space-between;
     gap: 2rem;
